@@ -8,7 +8,7 @@ Standards-Version: 3.9.2
 Package: nagios-plugins-linux
 Architecture: any
 Depends: ${misc:Depends}
-Recommends: ${shlibs:Depends}, ${python:Depends}
+Recommends: ${shlibs:Depends}
 Enhances: nagios-plugins, nagios-plugins-basic, nagios-plugins-standard
 Description: Plugins for nagios compatible monitoring systems
  This package provides various linux specific plugins for Nagios compatible
