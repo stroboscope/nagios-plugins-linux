@@ -7,29 +7,28 @@ Standards-Version: 3.9.2
 
 Package: nagios-plugins-linux
 Architecture: any
-Depends: ${misc:Depends}
-Recommends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}
 Enhances: nagios-plugins, nagios-plugins-basic, nagios-plugins-standard
 Description: Plugins for nagios compatible monitoring systems
  This package provides various linux specific plugins for Nagios compatible
  monitoring
- * check_clock - returns the number of seconds elapsed between local time and
-   Nagios server time 
- * check_cpu - checks the CPU (user mode) utilization 
- * check_cswch - checks the total number of context switches across all CPUs
- * check_ifmountfs - checks whether the given filesystems are mounted
- * check_intr - monitors the total number of system interrupts
- * check_iowait - monitors the I/O wait bottlenecks 
- * check_load - checks the current system load average 
- * check_memory - checks the memory usage 
- * check_multipath - checks the multipath topology status 
- * check_nbprocs - displays the number of running processes per user 
- * check_network - displays some network interfaces statistics 
- * check_paging - checks the memory and swap paging 
- * check_readonlyfs - checks for readonly filesystems 
- * check_swap - checks the swap usage 
- * check_tcpcount - checks the tcp network usage 
- * check_temperature - monitors the hardware's temperature 
- * check_uptime - checks how long the system has been running 
- * check_users - displays the number of users that are currently logged on 
+   * check_clock - returns the number of seconds elapsed between local time and
+     Nagios server time 
+   * check_cpu - checks the CPU (user mode) utilization 
+   * check_cswch - checks the total number of context switches across all CPUs
+   * check_ifmountfs - checks whether the given filesystems are mounted
+   * check_intr - monitors the total number of system interrupts
+   * check_iowait - monitors the I/O wait bottlenecks 
+   * check_load - checks the current system load average 
+   * check_memory - checks the memory usage 
+   * check_multipath - checks the multipath topology status 
+   * check_nbprocs - displays the number of running processes per user 
+   * check_network - displays some network interfaces statistics 
+   * check_paging - checks the memory and swap paging 
+   * check_readonlyfs - checks for readonly filesystems 
+   * check_swap - checks the swap usage 
+   * check_tcpcount - checks the tcp network usage 
+   * check_temperature - monitors the hardware's temperature 
+   * check_uptime - checks how long the system has been running 
+   * check_users - displays the number of users that are currently logged on 
 

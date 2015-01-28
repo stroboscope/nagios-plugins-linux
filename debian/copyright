@@ -3,7 +3,7 @@ Upstream-Name: nagios-plugins-linux
 Source: https://github.com/stroboscope/nagios-plugins-linux
 
 License: GPL-3
-Copyright: Davide Madrisan <davide.madrisan@gmail.com>
+Copyright: 2014 - 2015 Davide Madrisan <davide.madrisan@gmail.com>
   Some code and coding styles/ideas belong to other great open source projects:
  * cpufrequtils    https://www.kernel.org/pub/linux/utils/kernel/cpufreq/
                    License: GPLv2
@@ -24,9 +24,8 @@ Copyright: Davide Madrisan <davide.madrisan@gmail.com>
                    License: GNU Affero GPLv3
 
 Files: debian/*
-Copyright: Sergey Viuchny <sergey@de-bs.ru>
-License: GPL-3+
-
+Copyright: 2015 Sergey Viuchny <sergey@de-bs.ru>
+License: GPL-3
  The packaging scripts and files are licensed under the GNU General Public
  License, version 3 or later, found on your Debian system in
  /usr/share/common-licenses/GPL-3
