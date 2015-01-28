@@ -1,3 +1,9 @@
+nagios-plugins-linux (15-2) unstable; urgency=low
+
+  * Fix perfdata format
+
+ -- Sergey Viuchny <sergey@de-bs.ru>  Wed, 28 Jan 2015 14:20:41 +0300
+
 nagios-plugins-linux (15-1) unstable; urgency=low
 
   * initial release
