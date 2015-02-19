@@ -1,4 +1,4 @@
-Author: Sergey Viuchny <sviuchny@de-bs.ru>
+Author: Sergey Viuchny <sergey@de-bs.ru>
 
 --- nagios-plugins-linux-15.orig/plugins/check_memory.c
 +++ nagios-plugins-linux-15/plugins/check_memory.c
