@@ -16,6 +16,7 @@ Here is the list of the available plugins:
 * **check_cpu** - checks the CPU (user mode) utilization 
 * **check_cpufreq** - displays the CPU frequency characteristics
 * **check_cswch** - checks the total number of context switches across all CPUs
+* **check_fc** - monitors the status of the fiber status ports
 * **check_ifmountfs** - checks whether the given filesystems are mounted
 * **check_intr** - monitors the total number of system interrupts
 * **check_iowait** - monitors the I/O wait bottlenecks 
@@ -151,6 +152,30 @@ This Nagios plugin checks the total number of context switches across all CPUs.
 *Examples*
 
 	check_cswch 1 2
+
+
+**The check_fc plugin**
+
+This Nagios plugin monitors the status of the fiber status ports.
+
+*Usage*
+
+	check_fc [-w COUNTER] -c [COUNTER] [delay [count]]
+	check_fc -i [-v]
+	check_fc --help
+
+*Command line options*
+
+* -w, --warning COUNTER: warning threshold
+* -c, --critical COUNTER: critical threshold
+* -v, --verbose: show details for command-line debugging (Nagios may truncate output)
+* -h, --help: display this help and exit
+* -V, --version: output version information and exit
+
+*Examples*
+
+	check_fc -c 2:
+	check_fc -i -v
 
 
 **The check_ifmountfs plugin**
@@ -530,7 +555,8 @@ A C99-compliant compiler is required anyway.
 This package is known to compile with
 * gcc 4.1.2 (RHEL 5 / CentOS 5)
 * gcc 4.4 (RHEL6 / CentOS 6),
-* gcc 4.8.2, gcc 4,9,0 and clang 3.1 (openmamba GNU/Linux 2.90+).
+* gcc 4.8.2 (RHEL7 / CentOS 7),
+* gcc 4.9.0-4.9.2, clang 3.1 and 3.5.1 (openmamba GNU/Linux 2.90+).
 
 List of the Linux kernels that have been successfully tested: 2.6.18, 2.6.32, 3.10, 3.14.
 

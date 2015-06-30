@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
 
-AC_INIT([nagios-plugins-linux],[15],
+AC_INIT([nagios-plugins-linux],[17],
         [davide.madrisan@gmail.com])
 
 AC_CANONICAL_TARGET
@@ -81,6 +81,7 @@ cc_TRY_CFLAGS([-Wshadow])
 cc_TRY_CFLAGS([-Wsign-compare])
 cc_TRY_CFLAGS([-Wstrict-aliasing=2])
 cc_TRY_CFLAGS([-Wunused])
+cc_TRY_CFLAGS([-Warray-bounds])
 
 AC_SUBST([CFLAGS], ["$SUPPORTED_CFLAGS $CFLAGS"])
 
@@ -186,7 +187,6 @@ AC_HEADER_STDC
 AC_HEADER_STDBOOL
 AC_CHECK_HEADERS([ \
   arpa/inet.h \
-  linux/if_link.h \
   fcntl.h \
   limits.h \
   mntent.h \
@@ -196,9 +196,20 @@ AC_CHECK_HEADERS([ \
   sys/socket.h \
   sys/sysctl.h \
   sys/sysinfo.h \
+  sys/types.h \
   sys/time.h \
   sys/swap.h \
   utmpx.h])
+
+AC_CHECK_HEADERS(linux/if_link.h, [], [],
+[
+#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#if HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
+])
 
 dnl Checks for functions and libraries
 
@@ -219,6 +230,7 @@ AC_COMPILE_IFELSE(
   [ac_cv_clock_gettime_monotonic=no])
 AC_MSG_RESULT([$ac_cv_clock_gettime_monotonic])
 
+dnl suggestions from autoscan
 AC_CHECK_FUNCS([getmntent])  dnl wanted by: lib/mountlist.c
 AC_CHECK_FUNCS([hasmntopt])  dnl wanted by: lib/mountlist.c
 AC_CHECK_FUNCS([memset])     dnl wanted by: lib/cpustats.c
@@ -233,6 +245,8 @@ AC_CHECK_FUNCS([strtoul])    dnl wanted by: lib/interrupts.c
 AC_CHECK_FUNCS([strtoull])   dnl wanted by: lib/procparser.c
 AC_CHECK_FUNCS([sysinfo])    dnl wanted by: plugins/check_uptime.c
 AC_CHECK_FUNCS([uname])      dnl wanted by: lib/cpudesc.c
+AC_CHECK_FUNCS([realpath])   dnl wanted by: plugins/check_fc.c
+AC_CHECK_FUNCS([strtoull])   dnl wanted by: plugins/check_fc.c
 
 AC_FUNC_GETMNTENT
 AC_FUNC_MALLOC
@@ -332,6 +346,7 @@ AC_TYPE_SIZE_T
 # Define to `int' if <sys/types.h> does not define
 AC_CHECK_TYPES([ssize_t])
 AC_TYPE_UID_T
+AC_TYPE_UINT64_T
 
 dnl Checks for programs
 AC_PROG_RANLIB

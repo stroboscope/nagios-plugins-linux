@@ -93,11 +93,56 @@ sysfsparser_path_exist (const char *path, ...)
   return access (filename, F_OK) == 0;
 }
 
+void
+sysfsparser_opendir(DIR **dirp, const char *path, ...)
+{
+  char *dirname;
+  va_list args;
+
+  va_start (args, path);
+  if (vasprintf (&dirname, path, args) < 0)
+    plugin_error (STATE_UNKNOWN, errno, "vasprintf has failed");
+  va_end (args);
+
+  if ((*dirp = opendir (dirname)) == NULL)
+    plugin_error (STATE_UNKNOWN, errno, "Cannot open %s", dirname);
+}
+
+void sysfsparser_closedir(DIR *dirp)
+{
+  closedir(dirp);
+}
+
+struct dirent *
+sysfsparser_readfilename(DIR *dirp, unsigned int flags)
+{
+  struct dirent *dp;
+
+  for (;;)
+    {
+      errno = 0;
+      if ((dp = readdir (dirp)) == NULL)
+	{
+	  if (errno != 0)
+	    plugin_error (STATE_UNKNOWN, errno, "readdir() failure");
+	  else
+	    return NULL;		/* end-of-directory */
+	}
+
+      /* ignore directory entries */
+      if (!strcmp (dp->d_name, ".") || !strcmp (dp->d_name, ".."))
+	continue;
+
+     if (dp->d_type & flags)
+	return dp;
+    }
+}
+
 char *
 sysfsparser_getline (const char *format, ...)
 {
   FILE *fp;
-  char *line, *filename;
+  char *filename, *line = NULL;
   size_t len = 0;
   ssize_t chread;
   va_list args;
@@ -123,11 +168,11 @@ sysfsparser_getline (const char *format, ...)
   return line;
 }
 
-unsigned long
+unsigned long long
 sysfsparser_getvalue (const char *format, ...)
 {
   char *line, *endptr, *filename;
-  unsigned long value;
+  unsigned long long value;
   va_list args;
 
   va_start (args, format);
@@ -139,7 +184,7 @@ sysfsparser_getvalue (const char *format, ...)
     return 0;
 
   errno = 0;
-  value = strtoul (line, &endptr, 10);
+  value = strtoull (line, &endptr, 0);
   if ((endptr == line) || (errno == ERANGE))
     value = 0;
 
