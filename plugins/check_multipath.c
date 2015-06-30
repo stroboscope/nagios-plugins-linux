@@ -1,6 +1,6 @@
 /*
  * License: GPLv3+
- * Copyright (c) 2013 Davide Madrisan <davide.madrisan@gmail.com>
+ * Copyright (c) 2013,2015 Davide Madrisan <davide.madrisan@gmail.com>
  *
  * A Nagios plugin to check multipath topology.
  *
@@ -167,8 +167,8 @@ multipathd_query (const char *query, char *buf, size_t bufsize)
 static int
 check_for_faulty_paths (char *buf, size_t bufsize)
 {
-  char *str1, *token, *saveptr1 = NULL;
-  char *dm_st_ok_pattern = "[ \t]+[?active]?[ \t]*[?ready]?[ \t]+";
+  char *str1, *token, *saveptr1;
+  char *dm_st_ok_pattern = "[ \t]+\\[?active\\]?[ \t]*\\[?ready\\]?[ \t]+";
   int rc, row, faulty_paths = 0;
   regex_t regex;
 
