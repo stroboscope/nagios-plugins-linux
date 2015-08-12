@@ -1,3 +1,9 @@
+nagios-plugins-linux (17-2) unstable; urgency=medium
+
+  * Add cpu system check
+
+ -- Sergey Viuchny <sergey@de-bs.ru>  Thu, 13 Aug 2015 00:41:57 +0300
+
 nagios-plugins-linux (17-1) unstable; urgency=medium
 
   * New upstream

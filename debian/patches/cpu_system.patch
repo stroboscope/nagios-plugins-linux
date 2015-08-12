@@ -1,0 +1,112 @@
+Author: Sergey Viuchny <sergey@de-bs.ru>
+
+--- nagios-plugins-linux-17.orig/plugins/check_cpu.c
++++ nagios-plugins-linux-17/plugins/check_cpu.c
+@@ -64,6 +64,7 @@ static struct option const longopts[] =
+   {(char *) "critical", required_argument, NULL, 'c'},
+   {(char *) "warning", required_argument, NULL, 'w'},
+   {(char *) "verbose", no_argument, NULL, 'v'},
++  {(char *) "system", no_argument, NULL, 's'},
+   {(char *) "help", no_argument, NULL, GETOPT_HELP_CHAR},
+   {(char *) "version", no_argument, NULL, GETOPT_VERSION_CHAR},
+   {NULL, 0, NULL, 0}
+@@ -76,7 +77,7 @@ usage (FILE * out)
+   fputs (program_shorthelp, out);
+   fputs (program_copyright, out);
+   fputs (USAGE_HEADER, out);
+-  fprintf (out, "  %s [-v] [-m] [-p] [-w PERC] [-c PERC] [delay [count]]\n",
++  fprintf (out, "  %s [-v] [-m] [-p] [-s] [-w PERC] [-c PERC] [delay [count]]\n",
+ 	   program_name);
+   fprintf (out, "  %s --cpuinfo\n", program_name);
+   fputs (USAGE_OPTIONS, out);
+@@ -85,6 +86,7 @@ usage (FILE * out)
+   fputs ("  -p, --per-cpu   display the utilization of each CPU\n", out);
+   fputs ("  -w, --warning PERCENT   warning threshold\n", out);
+   fputs ("  -c, --critical PERCENT   critical threshold\n", out);
++  fputs ("  -s, --system    display the utilization of system\n", out);
+   fputs ("  -v, --verbose   show details for command-line debugging "
+          "(Nagios may truncate output)\n", out);
+   fputs ("  -i, --cpuinfo   show the CPU characteristics (for debugging)\n",
+@@ -244,6 +246,7 @@ main (int argc, char **argv)
+ {
+   int c, err;
+   bool verbose, cpu_model, per_cpu_stats;
++  bool cpu_system = false;
+   unsigned long i, len, delay, count;
+   char *critical = NULL, *warning = NULL;
+   char *p = NULL, *cpu_progname;
+@@ -264,17 +267,18 @@ main (int argc, char **argv)
+     plugin_error (STATE_UNKNOWN, 0,
+ 		  "bug: the plugin does not have a standard name");
+ 
++  program_shorthelp =
++    xstrdup ("This plugin checks the CPU utilization\n");
++
+   if (!strncmp (p, "iowait", 6))	/* check_iowait --> cpu_iowait */
+     {
+-      cpu_progname = xstrdup ("iowait");
+       program_shorthelp =
+         xstrdup ("This plugin checks I/O wait bottlenecks\n");
+     }
+   else				/* check_cpu --> cpu_user (the default) */
+     {
+-      cpu_progname = xstrdup ("user");;
+       program_shorthelp =
+-        xstrdup ("This plugin checks the CPU (user mode) utilization\n");
++        xstrdup ("This plugin checks the CPU utilization\n");
+     }
+ 
+   err = cpu_desc_new (&cpudesc);
+@@ -286,7 +290,7 @@ main (int argc, char **argv)
+   cpu_model = true;
+ 
+   while ((c = getopt_long (
+-		argc, argv, "c:w:vifmp"
++		argc, argv, "c:w:vifmps"
+ 		GETOPT_HELP_VERSION_STRING, longopts, NULL)) != -1)
+     {
+       switch (c)
+@@ -306,6 +310,9 @@ main (int argc, char **argv)
+ 	case 'c':
+ 	  critical = optarg;
+ 	  break;
++	case 's':
++	  cpu_system = true;
++	  break;
+ 	case 'w':
+ 	  warning = optarg;
+ 	  break;
+@@ -319,7 +326,17 @@ main (int argc, char **argv)
+ 	}
+     }
+ 
++  if (!strncmp (p, "iowait", 6))
++    {
++      cpu_progname = xstrdup ("iowait");
++    }
++  else
++    {
++      cpu_progname = cpu_system ? xstrdup ("system") : xstrdup ("user");
++    }
++
+   delay = DELAY_DEFAULT, count = COUNT_DEFAULT;
++
+   if (optind < argc)
+     {
+       delay = strtol_or_err (argv[optind++], "failed to parse argument");
+@@ -345,7 +362,14 @@ main (int argc, char **argv)
+        diowait[ncpus], dsteal[ncpus], ratio[ncpus];
+   int debt[ncpus];			/* handle idle ticks running backwards */
+   struct cpu_time cpuv[2][ncpus];
+-  jiff *cpu_value = strncmp (p, "iowait", 6) ? duser : diowait;
++  jiff *cpu_value;
++
++  if (strncmp (p, "iowait", 6)) {
++    cpu_value = cpu_system ? dsystem : duser ;
++  } else {
++    cpu_value = diowait;
++  }
++
+   const char *cpuname;
+ 
+   cpu_stats_get_time (cpuv[0], ncpus);
